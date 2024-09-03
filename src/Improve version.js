@@ -5,8 +5,8 @@ let equal = document.querySelector(".equal");
 let clear = document.querySelector(".clear");
 let del = document.querySelector(".delete");
 
-let previousNum = "",
-  currentNum = "";
+let previousNum = "";
+let currentNum = "";
 let operateSymbol = null;
 let resetNumber = false;
 
@@ -37,13 +37,8 @@ function setNumber(number) {
     return;
   }
 
-  // Prevent appending if currentNum is "0"
-  if (currentNum === "0" && number === "0") {
-    return;
-  }
-
-  // Replace "0" with the new number if first number is "0"
-  if (currentNum === "0") {
+  // Replace "0" with the new number or append if not starting with zero
+  if (currentNum === "0" && number !== ".") {
     currentNum = number;
   } else {
     currentNum += number;
@@ -56,25 +51,12 @@ function setOperator(op) {
   let operations = ["+", "-", "x", "/", "%"];
   if (currentNum === "" && previousNum === "") {
     return;
-  } else if (op === "CLEAR") {
-    operateSymbol = "";
-    previousNum = "";
-    currentNum = "";
-    updateScreen("0");
-    return (resetNumber = false);
+  }
+
+  if (op === "CLEAR") {
+    clearCalculator();
   } else if (op === "DEL") {
-    let str = resultText.textContent;
-    let deletedNum;
-    if (str.length > 1) {
-      deletedNum = str
-        .split("")
-        .slice(0, str.length - 1)
-        .join("");
-    } else {
-      deletedNum = "0";
-    }
-    currentNum = deletedNum;
-    updateScreen(deletedNum);
+    deleteLastDigit();
   } else if (op === "=") {
     if (operateSymbol && previousNum !== "" && currentNum !== "") {
       operateNumber();
@@ -90,50 +72,66 @@ function setOperator(op) {
   }
 }
 
+function clearCalculator() {
+  operateSymbol = "";
+  previousNum = "";
+  currentNum = "";
+  updateScreen("0");
+  resetNumber = false;
+}
+
+function deleteLastDigit() {
+  currentNum = currentNum.length > 1 ? currentNum.slice(0, -1) : "0";
+  updateScreen(currentNum);
+}
+
 function operateNumber() {
-  let result = "";
+  let result = 0;
   let currentConvertedNum = Number(currentNum);
   let previousConvertedNum = Number(previousNum);
 
-  if (operateSymbol === "+") {
-    result = previousConvertedNum + currentConvertedNum;
-  } else if (operateSymbol === "-") {
-    result = previousConvertedNum - currentConvertedNum;
-  } else if (operateSymbol === "x") {
-    result = previousConvertedNum * currentConvertedNum;
-  } else if (operateSymbol === "/") {
-    result = previousConvertedNum / currentConvertedNum;
-  } else if (operateSymbol === "%") {
-    result = previousConvertedNum % currentConvertedNum;
+  switch (operateSymbol) {
+    case "+":
+      result = previousConvertedNum + currentConvertedNum;
+      break;
+    case "-":
+      result = previousConvertedNum - currentConvertedNum;
+      break;
+    case "x":
+      result = previousConvertedNum * currentConvertedNum;
+      break;
+    case "/":
+      result =
+        currentConvertedNum === 0
+          ? "Error"
+          : previousConvertedNum / currentConvertedNum;
+      break;
+    case "%":
+      result =
+        currentConvertedNum === 0
+          ? "Error"
+          : previousConvertedNum % currentConvertedNum;
+      break;
+    default:
+      result = currentConvertedNum;
   }
 
-  result = Math.round(result * 100000) / 100000;
+  result =
+    typeof result === "number" ? Math.round(result * 100000) / 100000 : result;
   previousNum = result.toString();
-  currentNum = result.toString(); // Ensure currentNum reflects the result
+  currentNum = result.toString();
   resetNumber = true;
   updateScreen(result);
 }
 
 numbers.forEach((number) => {
-  number.addEventListener("click", (e) => {
-    buttonClick(e);
-  });
+  number.addEventListener("click", buttonClick);
 });
 
 operators.forEach((operator) => {
-  operator.addEventListener("click", (e) => {
-    buttonClick(e);
-  });
+  operator.addEventListener("click", buttonClick);
 });
 
-equal.addEventListener("click", (e) => {
-  buttonClick(e);
-});
-
-clear.addEventListener("click", (e) => {
-  buttonClick(e);
-});
-
-del.addEventListener("click", (e) => {
-  buttonClick(e);
-});
+equal.addEventListener("click", buttonClick);
+clear.addEventListener("click", buttonClick);
+del.addEventListener("click", buttonClick);

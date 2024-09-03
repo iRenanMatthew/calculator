@@ -38,62 +38,67 @@ operators.forEach((operator) => {
 });
 
 function storeNumber() {
+  // Check if the currentValue is empty (i.e., no second number has been entered)
+  if (flagNumber && value === "") {
+    return; // Do not proceed with the operation
+  }
+
   resultText.textContent = "";
   if (!flagNumber) {
-    valueArr[0].oldValue = value;
+    valueArr.oldValue = value;
     flagNumber = true;
   } else {
-    valueArr[0].currentValue = value;
+    valueArr.currentValue = value;
     operateNumber();
   }
 }
 
 function addNumber() {
   storeNumber();
-  valueArr[0].operator = "add";
+  valueArr.operator = "add";
 }
 
 function subtractNumber() {
   storeNumber();
-  valueArr[0].operator = "subtract";
+  valueArr.operator = "subtract";
 }
 
 function multiplyNumber() {
   storeNumber();
-  valueArr[0].operator = "multiply";
+  valueArr.operator = "multiply";
 }
 
 function divideNumber() {
   storeNumber();
-  valueArr[0].operator = "divide";
+  valueArr.operator = "divide";
 }
 
 function operateNumber() {
   console.log(valueArr);
-  if (valueArr[0].operator === "add") {
-    total = Number(valueArr[0].oldValue) + Number(valueArr[0].currentValue);
+  if (valueArr.operator === "add") {
+    total = Number(valueArr.oldValue) + Number(valueArr.currentValue);
     resultText.textContent = total;
-    valueArr[0].oldValue = total;
+    valueArr.oldValue = total;
     console.log("add");
-  } else if (valueArr[0].operator === "subtract") {
-    total = Number(valueArr[0].oldValue) - Number(valueArr[0].currentValue);
+  } else if (valueArr.operator === "subtract") {
+    total = Number(valueArr.oldValue) - Number(valueArr.currentValue);
     resultText.textContent = total;
-    valueArr[0].oldValue = total;
+    valueArr.oldValue = total;
     console.log("subtract");
-  } else if (valueArr[0].operator === "multiply") {
-    total = Number(valueArr[0].oldValue) * Number(valueArr[0].currentValue);
+  } else if (valueArr.operator === "multiply") {
+    total = Number(valueArr.oldValue) * Number(valueArr.currentValue);
     resultText.textContent = total;
-    valueArr[0].oldValue = total;
+    valueArr.oldValue = total;
     console.log("multiple");
-  } else if (valueArr[0].operator === "divide") {
-    total = Number(valueArr[0].oldValue) / Number(valueArr[0].currentValue);
+  } else if (valueArr.operator === "divide") {
+    total = Number(valueArr.oldValue) / Number(valueArr.currentValue);
     resultText.textContent = total;
-    valueArr[0].oldValue = total;
+    valueArr.oldValue = total;
     console.log("divide");
-  } else if (valueArr[0].operator === "modulo") {
-    total = Number(valueArr[0].oldValue) % Number(valueArr[0].currentValue);
+  } else if (valueArr.operator === "modulo") {
+    total = Number(valueArr.oldValue) % Number(valueArr.currentValue);
     resultText.textContent = total;
-    valueArr[0].oldValue = total;
+    valueArr.oldValue = total;
   } else {
     return console.log("niyek");
   }
